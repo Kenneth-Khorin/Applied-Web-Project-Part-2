@@ -28,6 +28,17 @@ require_once("settings.php");
     <main class="container">
         <h1>EOI Management System</h1>
         <p>Welcome to the HR Management Dashboard</p>
+        <div class="management-menu">
+        <h2>Management Options</h2>
+            <ul>
+                <li><a href="manage.php?action=list_all">List All EOIs</a></li>
+                <li><a href="manage.php?action=search_job">Search by Job Reference</a></li>
+                <li><a href="manage.php?action=search_name">Search by Name</a></li>
+                <li><a href="manage.php?action=delete">Delete by Job Reference</a></li>
+                <li><a href="manage.php?action=change_status">Change EOI Status</a></li>
+            </ul>
+        </div>
+        
     </main>
     
     <footer>
