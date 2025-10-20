@@ -1,5 +1,15 @@
 <?php
 require_once("settings.php");
+// Get action
+$action = isset($_GET['action']) ? $_GET['action'] : 'home';
+$message = '';
+
+// Get sort parameter
+$sort_by = isset($_GET['sort']) ? $_GET['sort'] : 'EOInumber';
+$allowed_sorts = ['EOInumber', 'JobReferenceNumber', 'FirstName', 'LastName', 'Status'];
+if (!in_array($sort_by, $allowed_sorts)) {
+    $sort_by = 'EOInumber';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,9 +37,47 @@ require_once("settings.php");
     
     <main class="container">
         <h1>EOI Management System</h1>
-        <p>Welcome to the HR Management Dashboard</p>
+        <<?php if ($action == 'list_all'): ?>
+            <section class="results-section">
+                <h2>All EOI Applications</h2>
+                <p>Sort by: 
+                    <a href="?action=list_all&sort=EOInumber">ID</a> | 
+                    <a href="?action=list_all&sort=JobReferenceNumber">Job Ref</a> | 
+                    <a href="?action=list_all&sort=FirstName">First Name</a> | 
+                    <a href="?action=list_all&sort=LastName">Last Name</a> | 
+                    <a href="?action=list_all&sort=Status">Status</a>
+                </p>
+                <?php
+                    $sql = "SELECT * FROM eoi ORDER BY $sort_by";
+                    $result = mysqli_query($conn, $sql);
+        
+                    if (mysqli_num_rows($result) > 0) {
+                        echo "<table border='1'>";
+                        echo "<tr><th>ID</th><th>Job Ref</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>";
+            
+                        while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . $row['EOInumber'] . "</td>";
+                        echo "<td>" . $row['JobReferenceNumber'] . "</td>";
+                        echo "<td>" . $row['FirstName'] . " " . $row['LastName'] . "</td>";
+                        echo "<td>" . $row['Email'] . "</td>";
+                        echo "<td>" . $row['PhoneNumber'] . "</td>";
+                        echo "<td>" . $row['Status'] . "</td>";
+                        echo "</tr>";
+                    }
+                        echo "</table>";
+                    } else {
+                        echo "<p>No EOI applications found.</p>";
+                    }
+                ?>
+            </section>
+        <?php else: ?>
+        <p>Please select an option from the menu above.</p>
+        <?php endif; ?>
+
+        <?php mysqli_close($conn); ?>
         <div class="management-menu">
-        <h2>Management Options</h2>
+            <h2>Management Options</h2>
             <ul>
                 <li><a href="manage.php?action=list_all">List All EOIs</a></li>
                 <li><a href="manage.php?action=search_job">Search by Job Reference</a></li>
@@ -38,11 +86,11 @@ require_once("settings.php");
                 <li><a href="manage.php?action=change_status">Change EOI Status</a></li>
             </ul>
         </div>
-        
+
     </main>
     
     <footer>
-        <p>&copy; 2024 Vangarde</p>
+        <p>&copy; 2025 Vangarde</p>
     </footer>
 </body>
 </html>
