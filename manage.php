@@ -130,6 +130,65 @@ if (!in_array($sort_by, $allowed_sorts)) {
                 }
             }
         ?>
+
+        <?php elseif ($action == 'search_name'): ?>
+            <section class="search-section">
+                <h2>Search EOIs by Applicant Name</h2>
+                <form method="POST" action="manage.php?action=search_name">
+                    <label for="first_name_search">First Name:</label>
+                    <input type="text" id="first_name_search" name="first_name_search">
+                    
+                    <label for="last_name_search">Last Name:</label>
+                    <input type="text" id="last_name_search" name="last_name_search">
+                    
+                    <button type="submit" name="search_name_submit">Search</button>
+                    <p><small>Enter first name, last name, or both</small></p>
+                </form>
+            </section>
+            
+            <?php
+            if (isset($_POST['search_name_submit'])) {
+                $first_name = mysqli_real_escape_string($conn, $_POST['first_name_search']);
+                $last_name = mysqli_real_escape_string($conn, $_POST['last_name_search']);
+                
+                $conditions = [];
+                if (!empty($first_name)) {
+                    $conditions[] = "FirstName LIKE '%$first_name%'";
+                }
+                if (!empty($last_name)) {
+                    $conditions[] = "LastName LIKE '%$last_name%'";
+                }
+                
+                if (count($conditions) > 0) {
+                    $where_clause = implode(' AND ', $conditions);
+                    $sql = "SELECT * FROM eoi WHERE $where_clause ORDER BY $sort_by";
+                    $result = mysqli_query($conn, $sql);
+                    
+                    if (mysqli_num_rows($result) > 0) {
+                        echo "<h3>Search Results</h3>";
+                        echo "<table border='1'>";
+                        echo "<tr><th>ID</th><th>Job Ref</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>";
+                        
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td>" . $row['EOInumber'] . "</td>";
+                            echo "<td>" . $row['JobReferenceNumber'] . "</td>";
+                            echo "<td>" . $row['FirstName'] . " " . $row['LastName'] . "</td>";
+                            echo "<td>" . $row['Email'] . "</td>";
+                            echo "<td>" . $row['PhoneNumber'] . "</td>";
+                            echo "<td>" . $row['Status'] . "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                    } else {
+                        echo "<p>No applications found matching your search.</p>";
+                    }
+                } else {
+                    echo "<p>Please enter at least one name field.</p>";
+                }
+            }
+        ?>    
+
         <?php else: ?>
         <p>Please select an option from the menu above.</p>
         <?php endif; ?>
