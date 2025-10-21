@@ -83,7 +83,19 @@ if (!in_array($sort_by, $allowed_sorts)) {
                     }
                 ?>
             </section>
-
+        
+        <?php elseif ($action == 'search_job'): ?>
+            <section class="search-section">
+                <h2>Search EOIs by Job Reference</h2>
+                <form method="POST" action="manage.php?action=search_job">
+                    <label for="job_ref_search">Job Reference Number:</label>
+                    <input type="text" id="job_ref_search" name="job_ref_search" 
+                        pattern="[A-Za-z0-9]{5}" maxlength="5" required
+                        placeholder="e.g., CA202">
+                    <button type="submit" name="search_job_submit">Search</button>
+                </form>
+            </section>
+            
         <?php
             if (isset($_POST['search_job_submit'])) {
                 $job_ref = mysqli_real_escape_string($conn, $_POST['job_ref_search']);
