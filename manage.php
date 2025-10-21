@@ -189,6 +189,75 @@ if (!in_array($sort_by, $allowed_sorts)) {
             }
         ?>    
 
+        <?php elseif ($action == 'delete'): ?>
+            <section class="delete-section">
+                <h2>Delete EOIs by Job Reference</h2>
+                <div class="warning-box">
+                    <p><strong>Warning:</strong> This action will permanently delete ALL applications for the specified job reference!</p>
+                </div>
+                
+                <form method="POST" action="manage.php?action=delete" 
+                    onsubmit="return confirm('Are you absolutely sure you want to DELETE ALL EOIs for this job reference?\n\nThis action CANNOT be undone!');">
+                    <div class="form-group">
+                        <label for="job_ref_delete">Job Reference Number:</label>
+                        <input type="text" id="job_ref_delete" name="job_ref_delete" 
+                            pattern="[A-Za-z0-9]{5}" maxlength="5" required
+                            placeholder="e.g., CA202">
+                        <small>Enter the job reference to delete all its applications</small>
+                    </div>
+                    <button type="submit" name="delete_submit" class="btn-danger">Delete All EOIs</button>
+                </form>
+            </section>
+            
+            <?php
+            if (isset($_POST['delete_submit'])) {
+                $job_ref = mysqli_real_escape_string($conn, $_POST['job_ref_delete']);
+                
+                //first, check how many records will be deleted
+                $count_sql = "SELECT COUNT(*) as total FROM eoi WHERE JobReferenceNumber = '$job_ref'";
+                $count_result = mysqli_query($conn, $count_sql);
+                $count_row = mysqli_fetch_assoc($count_result);
+                $total = $count_row['total'];
+                
+                if ($total > 0) {
+                    //get details before deletion for confirmation
+                    $details_sql = "SELECT FirstName, LastName FROM eoi WHERE JobReferenceNumber = '$job_ref'";
+                    $details_result = mysqli_query($conn, $details_sql);
+                    
+                    $sql = "DELETE FROM eoi WHERE JobReferenceNumber = '$job_ref'";
+                    
+                    if (mysqli_query($conn, $sql)) {
+                        echo "<div class='message success'>";
+                        echo "<h3>Deletion Successful</h3>";
+                        echo "<p><strong>Deleted $total EOI application(s) for job reference: " . htmlspecialchars($job_ref) . "</strong></p>";
+                        echo "<details>";
+                        echo "<summary>View deleted records</summary>";
+                        echo "<ul>";
+                        while ($detail = mysqli_fetch_assoc($details_result)) {
+                            echo "<li>" . htmlspecialchars($detail['FirstName']) . " " . 
+                                htmlspecialchars($detail['LastName']) . "</li>";
+                        }
+                        echo "</ul>";
+                        echo "</details>";
+                        echo "</div>";
+                    } else {
+                        echo "<div class='message error'>";
+                        echo "<p>Error deleting records: " . htmlspecialchars(mysqli_error($conn)) . "</p>";
+                        echo "</div>";
+                    }
+                } else {
+                    echo "<div class='message warning'>";
+                    echo "<p>No EOIs found for job reference: " . htmlspecialchars($job_ref) . "</p>";
+                    echo "<p>Please check the job reference and try again.</p>";
+                    echo "</div>";
+                }
+            }
+            ?>
+        
+        <?php else: ?>
+            <p>Please select an option from the menu above.</p>
+        <?php endif; ?>
+
         <?php else: ?>
         <p>Please select an option from the menu above.</p>
         <?php endif; ?>
