@@ -37,7 +37,19 @@ if (!in_array($sort_by, $allowed_sorts)) {
     
     <main class="container">
         <h1>EOI Management System</h1>
-        <<?php if ($action == 'list_all'): ?>
+        
+        <div class="management-menu">
+            <h2>Management Options</h2>
+            <ul>
+                <li><a href="manage.php?action=list_all">List All EOIs</a></li>
+                <li><a href="manage.php?action=search_job">Search by Job Reference</a></li>
+                <li><a href="manage.php?action=search_name">Search by Name</a></li>
+                <li><a href="manage.php?action=delete">Delete by Job Reference</a></li>
+                <li><a href="manage.php?action=change_status">Change EOI Status</a></li>
+            </ul>
+        </div>
+
+        <?php if ($action == 'list_all'): ?>
             <section class="results-section">
                 <h2>All EOI Applications</h2>
                 <p>Sort by: 
@@ -71,22 +83,46 @@ if (!in_array($sort_by, $allowed_sorts)) {
                     }
                 ?>
             </section>
+
+        <?php
+            if (isset($_POST['search_job_submit'])) {
+                $job_ref = mysqli_real_escape_string($conn, $_POST['job_ref_search']);
+                
+                $sql = "SELECT * FROM eoi WHERE JobReferenceNumber = '$job_ref' ORDER BY $sort_by";
+                $result = mysqli_query($conn, $sql);
+                
+                if (mysqli_num_rows($result) > 0) {
+                    echo "<h3>Results for Job Reference: $job_ref</h3>";
+                    echo "<p>Sort by: 
+                        <a href='?action=search_job&sort=EOInumber'>ID</a> | 
+                        <a href='?action=search_job&sort=FirstName'>First Name</a> | 
+                        <a href='?action=search_job&sort=LastName'>Last Name</a> | 
+                        <a href='?action=search_job&sort=Status'>Status</a>
+                    </p>";
+                    echo "<table border='1'>";
+                    echo "<tr><th>ID</th><th>Job Ref</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>";
+                    
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . $row['EOInumber'] . "</td>";
+                        echo "<td>" . $row['JobReferenceNumber'] . "</td>";
+                        echo "<td>" . $row['FirstName'] . " " . $row['LastName'] . "</td>";
+                        echo "<td>" . $row['Email'] . "</td>";
+                        echo "<td>" . $row['PhoneNumber'] . "</td>";
+                        echo "<td>" . $row['Status'] . "</td>";
+                        echo "</tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "<p>No applications found for job reference: $job_ref</p>";
+                }
+            }
+        ?>
         <?php else: ?>
         <p>Please select an option from the menu above.</p>
         <?php endif; ?>
 
         <?php mysqli_close($conn); ?>
-        <div class="management-menu">
-            <h2>Management Options</h2>
-            <ul>
-                <li><a href="manage.php?action=list_all">List All EOIs</a></li>
-                <li><a href="manage.php?action=search_job">Search by Job Reference</a></li>
-                <li><a href="manage.php?action=search_name">Search by Name</a></li>
-                <li><a href="manage.php?action=delete">Delete by Job Reference</a></li>
-                <li><a href="manage.php?action=change_status">Change EOI Status</a></li>
-            </ul>
-        </div>
-
     </main>
     
     <footer>
