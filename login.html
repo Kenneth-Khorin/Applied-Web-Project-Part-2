@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Project: ATIE Group – Login Page
+    Author: Team Member 3 (Nahian)
+    Purpose: Secure login UI that posts to login.php (server checks users.email / users.password[bcrypt])
+    Acknowledgements:
+      - Inter font from Google Fonts
+      - UI patterns inspired by modern glassmorphism login screens
+    SHI (Student Honesty & Integrity) — summary:
+      - I wrote this page and the PHP integration for login myself.
+      - External help: Google Fonts (Inter). No copied HTML/CSS/JS code beyond common patterns.
+      - GenAI disclosure: ChatGPT was used to review accessibility and form-wiring ideas; final code verified/edited by me.
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in • ATIE</title>
+
+  <!-- Acknowledgement: Inter font via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Design tokens for quick theme changes */
+      --bg: hsl(222 20% 10%);
+      --panel: hsl(222 25% 15% / 0.7);
+      --panel-strong: hsl(222 28% 16% / 0.9);
+      --text: hsl(0 0% 98%);
+      --muted: hsl(0 0% 78%);
+      --brand: hsl(206 100% 50%);
+      --brand-600: hsl(206 100% 45%);
+      --brand-700: hsl(206 100% 40%);
+      --danger: hsl(350 84% 48%);
+      --ring: hsl(206 100% 50% / 0.4);
+      --shadow: 0 10px 25px hsl(220 40% 2% / 0.5);
+      --radius: 16px;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: hsl(220 20% 97%);
+        --panel: hsl(0 0% 100% / 0.7);
+        --panel-strong: hsl(0 0% 100% / 0.95);
+        --text: hsl(233 15% 12%);
+        --muted: hsl(233 10% 40%);
+        --shadow: 0 10px 25px hsl(220 40% 30% / 0.2);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+                   Noto Sans, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% 10%, hsl(260 80% 60% / 0.13), transparent),
+        radial-gradient(900px 600px at 90% 20%, hsl(190 70% 50% / 0.15), transparent),
+        linear-gradient(180deg, var(--bg), hsl(222 22% 12%));
+      display: grid;
+      place-items: center;
+    }
+
+    main {
+      width: min(960px, 95%);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 24px;
+    }
+
+    /* Card with glass effect */
+    .card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: var(--panel);
+      border: 1px solid hsl(0 0% 100% / 0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+
+    /* Left panel: branding */
+    .brand {
+      display: grid;
+      gap: 16px;
+      padding: clamp(20px, 4vw, 40px);
+      background:
+        radial-gradient(600px 300px at 10% 10%, hsl(280 90% 60% / 0.15), transparent),
+        radial-gradient(700px 400px at 100% 0%, hsl(210 90% 60% / 0.15), transparent),
+        var(--panel-strong);
+    }
+    .brand h1 {
+      font-size: clamp(28px, 3.6vw, 40px);
+      margin: 0 0 4px 0;
+      letter-spacing: 0.4px;
+    }
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+    .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid hsl(0 0% 100% / 0.12);
+      background: hsl(0 0% 100% / 0.04);
+      font-size: 12px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Right panel: login form */
+    .form {
+      display: grid;
+      gap: 16px;
+      padding: clamp(20px, 4vw, 36px);
+    }
+    .form header { display: grid; gap: 6px; }
+    .form header h2 { margin: 0; font-size: 24px; }
+    .form header p { margin: 0; color: var(--muted); }
+
+    .field { display: grid; gap: 6px; }
+    .label-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    label { font-weight: 600; }
+
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid hsl(0 0% 100% / 0.15);
+      background: hsl(0 0% 100% / 0.06);
+      color: var(--text);
+      outline: none;
+      transition: box-shadow 120ms ease, border-color 120ms ease;
+    }
+    .input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 6px var(--ring);
+    }
+
+    .row { display: flex; align-items: center; justify-content: space-between; }
+    .checkbox { display: inline-flex; gap: 8px; align-items: center; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1px solid hsl(0 0% 100% / 0.18);
+      background: linear-gradient(180deg, var(--brand), var(--brand-600));
+      color: white;
+      cursor: pointer;
+      transition: transform 100ms ease, filter 100ms ease;
+    }
+    .btn:hover { filter: brightness(1.02); }
+    .btn:active { transform: translateY(1px); }
+
+    .hint { color: var(--muted); font-size: 14px; }
+    .error { color: var(--danger); font-size: 14px; min-height: 1.2em; }
+    .msg    { color: #9effc7; font-size: 14px; min-height: 1.2em; }
+
+    .divider {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+    }
+    .divider::before, .divider::after {
+      content: ""; height: 1px; background: hsl(0 0% 100% / 0.18);
+    }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; }
+
+    /* Small screens: stack panels */
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; }
+      .brand { order: 2; }
+      .form { order: 1; }
+    }
+
+    /* Acknowledgements & SHI block */
+    .ack {
+      margin-top: 18px;
+      border-top: 1px solid hsl(0 0% 100% / 0.14);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .ack h3 { margin: 0 0 6px; font-size: 14px; color: var(--text); }
+    .ack code { font-size: 12px; color: var(--text); background: #0003; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main role="main" aria-labelledby="page-title">
+    <!-- Left: branding / context -->
+    <section class="card brand" aria-label="About ATIE">
+      <h1 id="page-title">Welcome back to ATIE</h1>
+      <p>
+        Sign in to access your dashboard, manage submissions and collaborate
+        with your team in real time. Built with accessibility and responsiveness
+        in mind.
+      </p>
+      <div class="badges" aria-label="Highlights">
+        <span class="badge">Accessible</span>
+        <span class="badge">Responsive</span>
+        <span class="badge">Validated HTML5</span>
+      </div>
+    </section>
+
+    <!-- Right: login form -->
+    <section class="card form" aria-label="Sign in form">
+      <header>
+        <h2>Sign in</h2>
+        <p>Use your email and password to continue.</p>
+      </header>
+
+      <!-- Server feedback from query (?msg=..., ?err=...) -->
+      <div id="serverMsg" class="msg" aria-live="polite"></div>
+      <div id="serverErr" class="error" aria-live="polite"></div>
+
+      <!-- REAL FORM: posts to login.php -->
+      <form method="post" action="login.php" novalidate>
+        <!-- Email field -->
+        <div class="field">
+          <div class="label-row">
+            <label for="email">Email</label>
+            <span class="hint" id="email-hint">Use your university email.</span>
+          </div>
+          <input id="email" name="email" class="input" type="email" required
+                 inputmode="email" autocomplete="username" aria-describedby="email-hint" />
+        </div>
+
+        <!-- Password field with show/hide toggle -->
+        <div class="field">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <button id="toggle" type="button" class="hint" aria-controls="password"
+                    aria-pressed="false">Show</button>
+          </div>
+          <input id="password" name="password" class="input" type="password" required
+                 autocomplete="current-password" minlength="6" />
+          <div class="error" id="error" aria-live="polite"></div>
+        </div>
+
+        <!-- Row: remember + forgot -->
+        <div class="row">
+          <label class="checkbox">
+            <input type="checkbox" id="remember" name="remember" />
+            <span>Remember me</span>
+          </label>
+          <a class="hint" href="#" aria-label="Forgot password">Forgot password?</a>
+        </div>
+
+        <!-- Submit button -->
+        <button class="btn" id="submit" type="submit" aria-label="Sign in">
+          Sign in
+        </button>
+      </form>
+
+      <div class="divider" aria-hidden="true">or</div>
+      <p class="hint">
+        New here? <a href="#" aria-label="Create an account">Create an account</a>
+      </p>
+
+      <footer>
+        <p>
+          By continuing you agree to our <a href="#">Terms</a> and
+          <a href="#">Privacy</a>.
+        </p>
+      </footer>
+
+      <!-- Acknowledgements & SHI -->
+      <section class="ack" aria-label="Acknowledgements and SHI">
+        <h3>Acknowledgements</h3>
+        <p>
+          Typeface <em>Inter</em> via <a href="https://fonts.google.com/" target="_blank" rel="noopener">Google Fonts</a>.
+          General layout and accessibility checks based on common best practices (WAI-ARIA, HTML5).
+        </p>
+        <h3>Student Honesty & Integrity (SHI)</h3>
+        <p>
+          This login page (HTML/CSS/JS) and the integration to <code>login.php</code> were authored by Team Member 3.
+          Any external assistance has been acknowledged above. Where used, GenAI support was limited to
+          wording and accessibility suggestions; all final code was verified and tested by me.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const emailEl = document.querySelector('#email');
+    const passEl  = document.querySelector('#password');
+    const toggle  = document.querySelector('#toggle');
+    const errBox  = document.querySelector('#error');
+
+    // Toggle password visibility for usability
+    toggle.addEventListener('click', () => {
+      const isPwd = passEl.type === 'password';
+      passEl.type = isPwd ? 'text' : 'password';
+      toggle.textContent = isPwd ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-pressed', String(isPwd));
+      passEl.focus();
+    });
+
+    // Client-side checks; if valid, let the form submit to login.php
+    document.querySelector('form').addEventListener('submit', (e) => {
+      errBox.textContent = '';
+      const email = emailEl.value.trim();
+      const pwd   = passEl.value;
+      if (!email) { e.preventDefault(); errBox.textContent = 'Email is required.'; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        e.preventDefault(); errBox.textContent = 'Please enter a valid email address.'; return;
+      }
+      if (pwd.length < 6) {
+        e.preventDefault(); errBox.textContent = 'Password must be at least 6 characters.'; return;
+      }
+    });
+
+    // Read server messages from query string (?msg=..., ?err=...)
+    const qs = new URLSearchParams(location.search);
+    const serverMsg = document.getElementById('serverMsg');
+    const serverErr = document.getElementById('serverErr');
+    const map = {
+      loggedout: 'You have been logged out.',
+      method: 'Unsupported request method.',
+      missing: 'Please fill in both email and password.',
+      badcreds: 'Email or password is incorrect.',
+      login: 'Please login to continue.'
+    };
+    if (qs.get('msg')) serverMsg.textContent = map[qs.get('msg')] || '';
+    if (qs.get('err')) serverErr.textContent = map[qs.get('err')] || '';
+  </script>
+</body>
+</html>
