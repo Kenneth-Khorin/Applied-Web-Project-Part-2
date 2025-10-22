@@ -21,6 +21,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
     <meta name="author" content="Nuyang Rai">
     <title>EOI Management System</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/manage.css">
 </head>
 <body>
     <header>
@@ -274,11 +275,11 @@ if (!in_array($sort_by, $allowed_sorts)) {
                         <option value="Current">Current</option>
                         <option value="Final">Final</option>
                     </select>
-                    <small>
+                    <small style="display: block; margin-top: 10px;">
                         <strong>New:</strong> Recently submitted<br>
                         <strong>Current:</strong> Under review<br>
                         <strong>Final:</strong> Decision made
-                    </small>
+                    </smallstyle=display:>
                 </div>
                 
                 <button type="submit" name="status_submit" class="btn-primary">Update Status</button>
@@ -330,6 +331,9 @@ if (!in_array($sort_by, $allowed_sorts)) {
             }
         ?>
 
+        <?php else: ?>
+            <p>Please select an option from the menu above.</p>
+        <?php endif; ?>
         
 
         <?php mysqli_close($conn); ?>
