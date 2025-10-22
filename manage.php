@@ -1,10 +1,16 @@
 <?php
+session_start();
+
 require_once("settings.php");
-// Get action
+//get action
 $action = isset($_GET['action']) ? $_GET['action'] : 'home';
+$allowed_actions = ['home', 'list_all', 'search_job', 'search_name', 'delete', 'change_status'];
+if (!in_array($action, $allowed_actions)) {
+    $action = 'home';
+}
 $message = '';
 
-// Get sort parameter
+//get and validate sort parameter
 $sort_by = isset($_GET['sort']) ? $_GET['sort'] : 'EOInumber';
 $allowed_sorts = ['EOInumber', 'JobReferenceNumber', 'FirstName', 'LastName', 'Status'];
 if (!in_array($sort_by, $allowed_sorts)) {
@@ -28,7 +34,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
         <nav role="navigation" aria-label="Main navigation">
             <ul>
                 <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="jobs.html" class="nav-link">Jobs</a></li>
+                <li><a href="jobs.php" class="nav-link">Jobs</a></li>
                 <li><a href="apply.html" class="nav-link">Apply</a></li>
                 <li><a href="about.html" class="nav-link">About</a></li>
                 <li><a href="manage.php" class="nav-link active">Manage</a></li>
