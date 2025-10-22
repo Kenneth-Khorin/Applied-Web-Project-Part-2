@@ -1,0 +1,627 @@
+/* ===================================
+   UNIVERSAL STYLESHEET FOR ALL PAGES
+   =================================== */
+
+/* === GLOBAL RESET & BASE STYLES === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #101010;
+    color: white;
+}
+
+/* === CONTAINER & WRAPPER === */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.content-wrapper {
+    padding: 2rem;
+    max-width: 100%;
+}
+
+/* === HEADER & NAVIGATION === */
+header {
+    background: #1c1c1c;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    color: #ffcc00;
+    transform: translateY(-2px);
+}
+
+.nav-link:active {
+    transform: translateY(0);
+}
+
+.nav-link:focus {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #ffcc00, #B8860B);
+    color: white;
+}
+
+/* === TYPOGRAPHY === */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* === LISTS === */
+ul, ol {
+    margin-bottom: 1rem;
+}
+
+dd {
+    margin-left: 2rem;
+}
+
+/* === TABLES === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    background-color: #1c1c1c;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #333;
+}
+
+th {
+    background-color: #2a2a2a;
+    font-weight: 600;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* === MEMBER CARDS === */
+.member-card {
+    background-color: #1c1c1c;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* === BANNER SECTION === */
+.banner {
+    background-image: url("images/apply.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.bannercontent {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: bold;
+    color: white;
+    border: 2px solid #ffcc00;
+    border-radius: 24px;
+    background-color: rgba(28, 28, 28, 0.9);
+    padding: 1.5rem;
+    max-width: 600px;
+}
+
+.explore {
+    margin-top: 1rem;
+    background-color: #03346e;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.explore:hover {
+    background-color: #024a9c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* === LOGO SECTION === */
+.vangardelogo {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.vangardelogo p {
+    color: white;
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.logoimg {
+    max-width: 300px;
+    height: auto;
+}
+
+/* === TABLE OF CONTENTS === */
+.tablecontent {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.content {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    border: 2px solid #ffcc00;
+    border-radius: 24px;
+    padding: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+}
+
+.content a {
+    text-decoration: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.content a:hover {
+    color: #ffcc00;
+}
+
+/* === WHY WORK WITH US === */
+.why {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    max-width: 850px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    color: white;
+}
+
+.why h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1rem;
+}
+
+/* === VIDEO SECTION === */
+.youtube23 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.youtube {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 800px;
+    border: 2px solid #ffcc00;
+    border-radius: 8px;
+}
+
+/* === TEAM SECTION === */
+.team {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #1c1c1c;
+    padding: 3rem 1rem;
+    margin: 2rem 0;
+}
+
+#team h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1rem;
+}
+
+#team p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 850px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* === BENEFITS SECTION === */
+.benefits {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #333;
+    color: white;
+    padding: 3rem 1rem;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#employee {
+    max-width: 500px;
+    padding: 1rem;
+}
+
+#employee h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1rem;
+}
+
+#employee ul {
+    list-style-position: inside;
+    line-height: 1.8;
+}
+
+.benefits img {
+    max-width: 100%;
+    width: 420px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* === GLOBAL OFFICE === */
+.globaloffice {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(images/main-lobby.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 60vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+}
+
+#globaloffice {
+    color: white;
+    max-width: 600px;
+    padding: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+}
+
+#globaloffice h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+}
+
+#globaloffice p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    background-color: #ffcc00;
+    color: #1c1c1c;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background-color: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* === READY TO JOIN === */
+.readytojoin {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: #1c1c1c;
+    color: white;
+}
+
+.readytojoin h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1.5rem;
+}
+
+.button {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* === FOOTER === */
+footer {
+    background-color: #1c1c1c;
+    padding: 2rem 1rem;
+    color: white;
+}
+
+.footer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #ffcc00;
+}
+
+.footerlogo {
+    text-align: center;
+}
+
+.footerlogoimg {
+    max-width: 150px;
+    height: auto;
+}
+
+.objfooter h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.objfooter a {
+    color: #ccc;
+}
+
+.objfooter div {
+    margin-bottom: 0.5rem;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+    color: #999;
+}
+
+/* =================================
+   RESPONSIVE DESIGN - Media Queries
+   ================================= */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+    /* Adjust container padding for mobile */
+    .content-wrapper {
+        padding: 1.5rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    /* Stack navigation vertically on mobile */
+    nav ul {
+        gap: 0.5rem;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Reduce indent for definition lists */
+    dd {
+        margin-left: 1rem;
+    }
+    
+    /* Adjust table font size */
+    table {
+        font-size: 0.9rem;
+    }
+    
+    th, td {
+        padding: 0.5rem; 
+    }
+    
+    /* Adjust heading sizes */
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+    }
+    
+    /* Banner adjustments */
+    .banner {
+        min-height: 50vh;
+        padding: 1rem;
+    }
+    
+    .bannercontent {
+        padding: 1rem;
+    }
+    
+    /* Content adjustments */
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Benefits section */
+    .benefits {
+        flex-direction: column;
+        padding: 2rem 1rem;
+    }
+    
+    .benefits img {
+        width: 100%;
+        max-width: 420px;
+    }
+    
+    /* Global office */
+    .globaloffice {
+        min-height: 50vh;
+        padding: 1rem;
+    }
+    
+    #globaloffice {
+        max-width: 100%;
+    }
+    
+    /* Footer */
+    .footer {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens */
+    .container {
+        padding: 0 0.625rem;
+    }
+    
+    .content-wrapper {
+        padding: 1rem;
+    }
+    
+    .member-card {
+        padding: 1rem;
+    }
+    
+    /* Make table scroll horizontally */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    /* Header adjustments */
+    header {
+        padding: 0.5rem;
+    }
+    
+    /* Navigation */
+    nav ul {
+        gap: 0.5rem;
+    }
+    
+    .nav-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Banner */
+    .banner {
+        min-height: 40vh;
+    }
+    
+    /* Logo */
+    .vangardelogo p {
+        font-size: 2rem;
+    }
+    
+    /* Content */
+    .content {
+        padding: 1rem;
+    }
+    
+    .content a {
+        font-size: 0.9rem;
+    }
+    
+    /* Sections */
+    .why,
+    #team,
+    #employee,
+    #globaloffice {
+        padding: 1rem;
+    }
+    
+    /* Video */
+    .youtube {
+        max-width: 100%;
+    }
+    
+    /* Buttons */
+    .button {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn,
+    .explore {
+        width: 100%;
+        max-width: 250px;
+    }
+}

@@ -55,7 +55,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                 <li><a href="manage.php?action=change_status">Change EOI Status</a></li>
             </ul>
         </div>
-
+        
         <?php if ($action == 'list_all'): ?>
             <section class="results-section">
                 <h2>All EOI Applications</h2>
