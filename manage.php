@@ -330,9 +330,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
             }
         ?>
 
-        <?php else: ?>
-        <p>Please select an option from the menu above.</p>
-        <?php endif; ?>
+        
 
         <?php mysqli_close($conn); ?>
     </main>
