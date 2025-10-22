@@ -253,10 +253,82 @@ if (!in_array($sort_by, $allowed_sorts)) {
                 }
             }
             ?>
+
+            <?php elseif ($action == 'change_status'): ?>
+        <section class="status-section">
+            <h2>Change EOI Status</h2>
+            
+            <form method="POST" action="manage.php?action=change_status">
+                <div class="form-group">
+                    <label for="eoi_id">EOI ID Number:</label>
+                    <input type="number" id="eoi_id" name="eoi_id" required min="1"
+                           placeholder="Enter EOI ID">
+                    <small>You can find the ID from the "List All EOIs" page</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_status">New Status:</label>
+                    <select id="new_status" name="new_status" required>
+                        <option value="">-- Select Status --</option>
+                        <option value="New">New</option>
+                        <option value="Current">Current</option>
+                        <option value="Final">Final</option>
+                    </select>
+                    <small>
+                        <strong>New:</strong> Recently submitted<br>
+                        <strong>Current:</strong> Under review<br>
+                        <strong>Final:</strong> Decision made
+                    </small>
+                </div>
+                
+                <button type="submit" name="status_submit" class="btn-primary">Update Status</button>
+            </form>
+        </section>
         
-        <?php else: ?>
-            <p>Please select an option from the menu above.</p>
-        <?php endif; ?>
+        <?php
+            if (isset($_POST['status_submit'])) {
+                $eoi_id = mysqli_real_escape_string($conn, $_POST['eoi_id']);
+                $new_status = mysqli_real_escape_string($conn, $_POST['new_status']);
+                
+                //check if EOI exists and get current details
+                $check_sql = "SELECT * FROM eoi WHERE EOInumber = '$eoi_id'";
+                $check_result = mysqli_query($conn, $check_sql);
+                
+                if (mysqli_num_rows($check_result) > 0) {
+                    $old_record = mysqli_fetch_assoc($check_result);
+                    $old_status = $old_record['Status'];
+                    
+                    //update the status
+                    $sql = "UPDATE eoi SET Status = '$new_status' WHERE EOInumber = '$eoi_id'";
+                    
+                    if (mysqli_query($conn, $sql)) {
+                        echo "<div class='message success'>";
+                        echo "<h3>Status Updated Successfully</h3>";
+                        echo "<div class='status-update-details'>";
+                        echo "<p><strong>EOI ID:</strong> " . htmlspecialchars($eoi_id) . "</p>";
+                        echo "<p><strong>Applicant:</strong> " . htmlspecialchars($old_record['FirstName']) . " " . 
+                            htmlspecialchars($old_record['LastName']) . "</p>";
+                        echo "<p><strong>Job Reference:</strong> " . htmlspecialchars($old_record['JobReferenceNumber']) . "</p>";
+                        echo "<p><strong>Email:</strong> " . htmlspecialchars($old_record['Email']) . "</p>";
+                        echo "<p class='status-change'>";
+                        echo "<span class='status-badge status-" . strtolower($old_status) . "'>" . htmlspecialchars($old_status) . "</span>";
+                        echo "<span class='status-badge status-" . strtolower($new_status) . "'>" . htmlspecialchars($new_status) . "</span>";
+                        echo "</p>";
+                        echo "</div>";
+                        echo "</div>";
+                    } else {
+                        echo "<div class='message error'>";
+                        echo "<p>Error updating status: " . htmlspecialchars(mysqli_error($conn)) . "</p>";
+                        echo "</div>";
+                    }
+                } else {
+                    echo "<div class='message error'>";
+                    echo "<p> EOI ID not found: " . htmlspecialchars($eoi_id) . "</p>";
+                    echo "<p>Please check the ID and try again. You can find valid IDs by listing all EOIs.</p>";
+                    echo "</div>";
+                }
+            }
+        ?>
 
         <?php else: ?>
         <p>Please select an option from the menu above.</p>
