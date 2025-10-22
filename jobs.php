@@ -1,169 +1,279 @@
-<?php
-// jobs.php — Task 5: render all jobs dynamically from DB 
-require_once 'settings.php';
-
-function h($s){ return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8'); }
-
-// Discover columns in jobs table
-$colsRes = $conn->query("SHOW COLUMNS FROM jobs");
-$jobCols = [];
-while ($c = $colsRes->fetch_assoc()) { $jobCols[strtolower($c['Field'])] = true; }
-
-// Your key is job_id (from screenshot)
-$jobKeyCol = 'job_id';
-
-// Allowed sort fields based on existing columns
-$allowedSorts = array_values(array_intersect(['title', 'reports_to', $jobKeyCol], array_keys($jobCols) + [$jobKeyCol => true]));
-if (!$allowedSorts) $allowedSorts = [$jobKeyCol];
-$orderBy = in_array($_GET['sort'] ?? '', $allowedSorts, true) ? $_GET['sort'] : $allowedSorts[0];
-$orderDir = (($_GET['dir'] ?? '') === 'asc') ? 'ASC' : 'DESC';
-
-// Optional search term across present columns
-$term = trim($_GET['q'] ?? '');
-if ($term === '') {
-  $sql = "SELECT * FROM jobs ORDER BY $orderBy $orderDir";
-  $stmt = $conn->prepare($sql);
-} else {
-  $like = "%$term%";
-  $parts = [];
-  $types = '';
-  $vals  = [];
-  foreach (['title','description','reports_to'] as $c) {
-    if (isset($jobCols[$c])) { $parts[] = "$c LIKE ?"; $types.='s'; $vals[]=$like; }
-  }
-  if (!$parts) { $sql = "SELECT * FROM jobs ORDER BY $orderBy $orderDir"; $stmt = $conn->prepare($sql); }
-  else {
-    $sql = "SELECT * FROM jobs WHERE (" . implode(' OR ', $parts) . ") ORDER BY $orderBy $orderDir";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$vals);
-  }
-}
-$stmt->execute();
-$jobs = $stmt->get_result();
-
-// Helpers for optional bullet tables
-function table_exists(mysqli $conn, string $t): bool {
-  $t = $conn->real_escape_string($t);
-  $r = $conn->query("SELECT COUNT(*) c FROM information_schema.tables
-                     WHERE table_schema = DATABASE() AND table_name = '$t'");
-  return (int)($r->fetch_assoc()['c'] ?? 0) > 0;
-}
-function fetch_bullets(mysqli $conn, string $table, string $keyCol, string $jobKey): array {
-  if (!table_exists($conn, $table)) return [];
-  $stmt = $conn->prepare("SELECT * FROM `$table` WHERE `$keyCol`=?");
-  $stmt->bind_param("s", $jobKey);
-  $stmt->execute();
-  $res = $stmt->get_result();
-  if (!$res || $res->num_rows === 0) return [];
-  $row = $res->fetch_assoc();
-  $bul = [];
-  foreach ($row as $col => $val) {
-    if (stripos($col, 'bp') === 0 && trim((string)$val) !== '') $bul[] = $val;
-  }
-  return $bul;
-}
-?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Jobs • ATIE</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root{--ink:#111827;--sub:#6b7280;--bg:#f8fafc;--card:#ffffff;--br:#e5e7eb;--brand:#2563eb;}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
-    .wrap{max-width:1000px;margin:auto;padding:24px;display:grid;gap:18px}
-    h1{margin:8px 0 0}.sub{color:var(--sub)}
-    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    input[type="search"],select{padding:10px 12px;border:1px solid var(--br);border-radius:10px}
-    .card{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:18px;display:grid;gap:8px}
-    .chip{display:inline-block;border:1px solid var(--br);padding:4px 8px;border-radius:999px;margin-right:6px;font-size:12px;background:#f9fafb}
-    ul{margin:.4rem 0 .6rem 1.2rem}
-    .btn{display:inline-block;background:var(--brand);color:#fff;padding:10px 14px;border-radius:10px;text-decoration:none}
-    .row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-    .empty{padding:20px;border:1px dashed var(--br);border-radius:12px;background:#fff}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="description" content="Jobs description">
+    <meta name="keywords" content="Jobs, Cybersecurity,">
+    <meta name="author" content="Kenneth Khorin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs page</title>
+    <link rel="stylesheet" href="styles/custom.css">
 </head>
+
 <body>
-  <main class="wrap">
-    <header>
-      <h1>Open Roles</h1>
-      <p class="sub">This page renders directly from the database.</p>
-    </header>
+<header>
+<?php include 'nav.inc'; ?>
+</header>
+    <img src="images/shieldlogo.png" alt="Vangarde Logo" class="logo">
+    <h1>Career at Vangarde</h1>
+    <p class="p1">We’re a young and ambitious cybersecurity firm with big plans to expand, and we’re looking for passionate people to grow with us. you’ll have the opportunity to shape our culture, contribute to innovative solutions, and make a real impact as we build and scale. Check out our current job openings below:</p>
+    
+    <!--Why Work With us section-->
+    <aside>
+    <h2>Why Work With us</h2>
+    <ol>
+        <li><b>Be part of a growing company:</b> Join us at an exciting stage where your contributions directly shape our future.</li>
+        <li><b>Innovative projects:</b> Work on cutting-edge cybersecurity solutions that challenge the status quo.</li>
+        <li><b>Collaborative culture:</b> We value teamwork, openness, and shared success.</li>
+        <li><b>Professional growth:</b> Opportunities for learning, development, and career advancement.</li>
+    </ol>
+    </aside>
+    <!--Benefits & Perks section-->
+    <section class="benefits">
+    <h2>Benefits & Perks at Vangarde</h2>
+    <dl>
+        <dt>&#128181; Competitive Salary</dt>
+        <dd>We offer competitive salary that reflect your skills and experience.</dd>
+        <dt>&#127973; Health & Wellness</dt>
+        <dd>Comprehensive health insurance plans, wellness programs, and mental health support.</dd>
+        <dt>&#128197; Flexible Work Arrangements</dt>
+        <dd>We only work for 4 days a week and with 1 day flexible to work from home. To support Mental health and promote work life balanced.</dd>
+        <dt>&#128200; Professional Development</dt>
+        <dd>Access to training, certifications, conferences, and continuous learning opportunities.</dd>
+        <dt>&#129328; Paid parental leave</dt>
+        <dd>When the time comes to welcome a new member of the family, we offer generous and fully paid parental leave.</dd>
+    </dl>
+    </section>
 
-    <form class="toolbar" method="get" action="jobs.php">
-      <input type="search" name="q" placeholder="Search jobs…" value="<?php echo h($term); ?>">
-      <label>Sort:
-        <select name="sort">
-          <?php foreach ($allowedSorts as $s): ?>
-            <option value="<?php echo h($s); ?>" <?php if($orderBy===$s) echo 'selected'; ?>>
-              <?php echo h(ucwords(str_replace('_',' ',$s))); ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-      </label>
-      <label>Dir:
-        <select name="dir">
-          <option value="desc" <?php if($orderDir==='DESC') echo 'selected'; ?>>Desc</option>
-          <option value="asc"  <?php if($orderDir==='ASC')  echo 'selected'; ?>>Asc</option>
-        </select>
-      </label>
-      <button type="submit">Apply</button>
-    </form>
+    <section class="jobs-cards">
+    <h2>Become part of a team shaping the future of cybersecurity.</h2>
+    <p>Ready to make a real impact? Explore opportunities to grow with us.</p>
 
-    <?php if ($jobs->num_rows === 0): ?>
-      <div class="empty">No jobs found. Add rows to <strong>jobs</strong> and reload.</div>
-    <?php endif; ?>
-
-    <?php while ($j = $jobs->fetch_assoc()): ?>
-      <?php
-        $jobKey = $j[$jobKeyCol];
-        $title  = $j['title'] ?? '';
-        $desc   = $j['description'] ?? '';
-        $reports= $j['reports_to'] ?? '';
-
-        $reqBul  = fetch_bullets($conn, 'required_skills',     $jobKeyCol, $jobKey);
-        $prefBul = fetch_bullets($conn, 'preferred_skills',    $jobKeyCol, $jobKey);
-        $respBul = fetch_bullets($conn, 'responsibilities',    $jobKeyCol, $jobKey);
-        $salBul  = fetch_bullets($conn, 'salary_and_benefits', $jobKeyCol, $jobKey);
-      ?>
-      <article class="card" aria-labelledby="h-<?php echo h($jobKey); ?>">
-        <div class="row">
-          <h2 id="h-<?php echo h($jobKey); ?>"><?php echo h($title); ?></h2>
-          <span class="chip"><?php echo h($jobKeyCol . ': ' . $jobKey); ?></span>
+    <div class="jobs">
+        <!--Cybersecurity analyst card 1-->
+        <div class="cards">
+            <div class="card-content">
+                <img src="images/cybersecurityanalyst.jpg" alt="Cybersecurity Analyst"> <!--the image was taken from this website https://www.pexels.com/photo/person-in-white-shirt-using-computer-4709289/-->
+                <div class="card-body">
+                    <h3 class="card-title">Cybersecurity Analyst</h3>
+                    <p class="card-text">We’re looking for curious minds who thrive in fast-paced environments and never stop learning. Grow your career in a company that values precision, creativity, and ethical responsibility.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#ca" class="btn"><button>View roles</button></a>
+                </div>
+            </div>
         </div>
 
-        <?php if ($reports): ?>
-          <p class="sub">Reports to: <strong><?php echo h($reports); ?></strong></p>
-        <?php endif; ?>
+        <!--DevSecOps Engineer card 2-->
+        <div class="cards">
+            <div class="card-content">
+                <img src="images/devsecops.jpg" alt="DevSecOps Engineer"> <!--the image was take from this website https://www.pexels.com/photo/close-up-photo-of-person-typing-on-laptop-1181675/-->
+                <div class="card-body">
+                    <h3 class="card-title">DevSecOps Engineer</h3>
+                    <p class="card-text">Join a team where automation meets vigilance—your work will ensure our infrastructure is secure, agile, and future-ready. Work cross-functionally with developers, security analysts, and cloud architects to create seamless, secure operations.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#dse" class="btn"><button>View roles</button></a>
+                </div>
+            </div>
+        </div>
 
-        <?php if ($desc): ?>
-          <p><?php echo nl2br(h($desc)); ?></p>
-        <?php endif; ?>
+        <!--Cloud Security Architect card 3-->
+        <div class="cards">
+            <div class="card-content">
+                <img src="images/cloud.jpg" alt="Cloud Security Architect"> <!--the image was take from this website https://www.pexels.com/photo/selective-focus-photo-of-man-using-laptop-1438081/-->
+                <div class="card-body">
+                    <h3 class="card-title">Cloud Security Architect</h3>
+                    <p class="card-text">Design and implement robust security architectures for our cloud environments. Collaborate with cross-functional teams to ensure our cloud infrastructure is secure, scalable, and compliant with industry standards.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#csa" class="btn"><button>View roles</button></a>
+                 </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    <!--Section for Cybersecurity Analyst role-->
+    <section class="roles1">
+        <h2 id="ca">Cybersecurity Analyst</h2>
+        <p>As a Cybersecurity Analyst at Vangarde, you will be at the forefront of protecting our digital assets. You will monitor networks for security breaches, investigate incidents, and implement security measures to safeguard our systems. Your analytical skills and attention to detail will be crucial in identifying vulnerabilities and ensuring compliance with security policies.</p>
 
-        <?php if ($reqBul): ?>
-          <h3>Required skills</h3>
-          <ul><?php foreach ($reqBul as $b) echo '<li>'.h($b).'</li>'; ?></ul>
-        <?php endif; ?>
+        <div class="roles-grid">
+            <div class="role-card">
+                <h3>Responsibilities and Duties</h3>
+                <ol>
+                    <li>Monitor and analyze network traffic, security logs, and system activity to detect suspicious behavior or potential intrusions.</li>
+                    <li>Conduct regular vulnerability assessments and support penetration testing to identify and address weaknesses.</li>
+                    <li>Investigate security incidents and breaches.</li>
+                    <li>Develop and implement security policies and procedures.</li>
+                    <li>Work with IT, engineering, and business teams to raise security awareness, train staff on safe practices such as phishing prevention, and provide clear reporting on risks and incidents to management.</li>
+                </ol>
+            </div>
 
-        <?php if ($prefBul): ?>
-          <h3>Preferred skills</h3>
-          <ul><?php foreach ($prefBul as $b) echo '<li>'.h($b).'</li>'; ?></ul>
-        <?php endif; ?>
+            <div class="role-card">
+                <h3>Qualifications</h3>
+                <ul>
+                    <li>Bachelor's degree in Computer Science, Information Technology, or related field.</li>
+                    <li>2+ years of experience in a related field</li>
+                    <li>Experience with security information and event management (SIEM) tools.</li>
+                    <li>Knowledge of network protocols and security technologies.</li>
+                    <li>Strong analytical and problem-solving skills.</li>
+                    <li>Relevant certifications (e.g., CISSP, CEH) are a plus.</li>
+                </ul>
+            </div>
 
-        <?php if ($respBul): ?>
-          <h3>Responsibilities</h3>
-          <ul><?php foreach ($respBul as $b) echo '<li>'.h($b).'</li>'; ?></ul>
-        <?php endif; ?>
+            <div class="role-card">
+                <h3>Preferred Qualifications</h3>
+                <ul>
+                    <li>Industry certifications such as CompTIA Security+, CEH, CySA+, OSCP, or CISSP.</li>
+                    <li>2-4 years of hands-on experience in cybersecurity, network security, or IT security operations.</li>
+                    <li>Understanding of secure networking principles, firewalls, IDS/IPS, and endpoint protection.</li>
+                    <li>Proficiency in scripting or automation (e.g., Python, PowerShell, Bash).</li>
+                </ul>
+            </div>
 
-        <?php if ($salBul): ?>
-          <h3>Salary &amp; benefits</h3>
-          <ul><?php foreach ($salBul as $b) echo '<li>'.h($b).'</li>'; ?></ul>
-        <?php endif; ?>
+            <div class="role-card">
+                <h3>Salary and Benefits</h3>
+                <ul>
+                    <li>Salary range: <b>$80,000 - $90,000</b> per year + Bonus</li>
+                    <li>Comprehensive health insurance plans.</li>
+                    <li>Generous superannuation</li>
+                    <li>Opportunities for professional development and certifications.</li>
+                    <li>Flexible work arrangements, including remote work options.</li>
+                    <li>Good work/life balance.</li>
+                </ul>
+            </div>
 
-        <p><a class="btn" href="apply.php?job=<?php echo urlencode($jobKey); ?>">Apply for this role</a></p>
-      </article>
-    <?php endwhile; ?>
-  </main>
+            <div class="role-card">
+                <h3>Reports to Director of Technology</h3>
+            </div>
+
+            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <p>Ref #: CA202</p>
+
+        </div>
+    </section>
+    <!--Section for DevSecOps Engineer role-->
+    <section class="roles2">
+        <h2 id="dse">DevSecOps Engineer</h2>
+        <p>As a DevSecOps Engineer at Vangarde, you will play a critical role in integrating security practices into our DevOps processes. You will collaborate with development, operations, and security teams to ensure that security is embedded throughout the software development lifecycle. Your expertise in automation, infrastructure as code, and continuous integration/continuous deployment (CI/CD) pipelines will help us deliver secure applications efficiently.</p>
+
+        <div class="roles-grid">
+            <div class="role-card">
+                <h3>Responsibilities and Duties</h3>
+                <ol>
+                    <li>Design, implement, and maintain secure CI/CD pipelines that integrate automated security testing at every stage of the software lifecycle.</li>
+                    <li>Collaborate with development and operations teams to design and implement secure infrastructure as code (IaC) solutions.</li>
+                    <li>Conduct threat modeling and risk assessments for new applications and services.</li>
+                    <li>Monitor cloud and on-premise environments for misconfigurations, vulnerabilities, and compliance issues.</li>
+                    <li>Develop and maintain logging, monitoring, and alerting systems to detect and respond to security events in real time.</li>
+                </ol>
+            </div>
+
+            <div class="role-card">
+                <h3>Qualifications</h3>
+                <ul>
+                    <li>Bachelor's degree in Computer Science, Information Technology, or related field.</li>
+                    <li>3+ years of experience in DevOps, software development, or IT operations with a focus on security.</li>
+                    <li>Experience with CI/CD tools (e.g., Jenkins, GitLab CI, CircleCI).</li>
+                    <li>Knowledge of cloud platforms (AWS, Azure, GCP) and containerization (Docker, Kubernetes).</li>
+                    <li>Strong scripting skills (e.g., Python, Bash, PowerShell).</li>
+                    <li>Relevant certifications (e.g., AWS Certified Security - Specialty, Certified Kubernetes Security Specialist) are a plus.</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Preferred Qualifications</h3>
+                <ul>
+                    <li>Industry certifications such as AWS Certified Security - Specialty, Certified Kubernetes Security Specialist (CKS), or GIAC certifications.</li>
+                    <li>3-5 years of experience in DevOps or cloud engineering with a focus on security integration.</li>
+                    <li>Proficiency in infrastructure as code (IaC) tools such as Terraform or CloudFormation.</li>
+                    <li>Experience integrating security tools into CI/CD workflows (e.g., SonarQube, Trivy, Aqua, Snyk).</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Salary and Benefits</h3>
+                <ul>
+                    <li>Salary range: <b>$110,000 - $140,000</b> per year + Bonus</li>
+                    <li>Comprehensive health insurance plans.</li>
+                    <li>Generous superannuation</li>
+                    <li>Options for remote, hybrid, or flexible hours to support work-life balance.</li>
+                    <li>Generous annual leave, sick leave, and additional paid time off for personal needs.</li>
+                    <li>Work with a supportive team where security, innovation, and growth are priorities.</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Reports to Head of Security</h3>
+            </div>
+
+            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <p>Ref #: DSE222</p>
+        
+        </div>
+    </section>
+    <!--Section for Cloud Security Architect role-->
+    <section class="roles3">
+        <h2 id="csa">Cloud Security Architect</h2>
+        <p>As a Cloud Security Architect at Vangarde, you will be responsible for designing and implementing secure cloud architectures that protect our data and applications. You will work closely with cloud engineers, developers, and security teams to ensure that our cloud environments are resilient against threats and compliant with industry standards. Your expertise in cloud security best practices and architecture design will be essential in guiding our cloud strategy.</p>
+
+        <div class="roles-grid">
+            <div class="role-card">
+                <h3>Responsibilities and Duties</h3>
+                <ol>
+                    <li>Develop and implement secure cloud-based solutions across AWS, Azure, or GCP.</li>
+                    <li>Conduct risk assessments and threat modeling for cloud environments.</li>
+                    <li>Develop and enforce cloud security policies, standards, and best practices.</li>
+                    <li>Partner with development, DevOps, and infrastructure teams to embed security controls into CI/CD pipelines and infrastructure-as-code.</li>
+                    <li>Provide hands-on expertise to secure cloud integrations.</li>
+                </ol>
+            </div>
+
+            <div class="role-card">
+                <h3>Qualifications</h3>
+                <ul>
+                    <li>Bachelor's degree in Computer Science, Information Technology, or related field.</li>
+                    <li>5+ years of experience in cloud architecture, cloud security, or related field.</li>
+                    <li>Experience with cloud platforms (AWS, Azure, GCP) and cloud security tools.</li>
+                    <li>Strong understanding of network security, identity and access management (IAM), encryption, and compliance frameworks (e.g., GDPR, HIPAA).</li>
+                    <li>Industry-recognized certifications like CISSP, CISM, CCSP or equivalent are a significant advantage.</li>
+                    <li>Proven competency in operating both autonomously and collaboratively in team settings.</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Preferred Qualifications</h3>
+                <ul>
+                    <li>Industry certifications such as AWS Certified Solutions Architect - Professional, Microsoft Certified: Azure Solutions Architect Expert, or Google Professional Cloud Architect.</li>
+                    <li>5-7 years of experience in cloud architecture or cloud security roles.</li>
+                    <li>Deep understanding of multi-cloud environments and hybrid cloud architectures.</li>
+                    <li>Experience with automation and infrastructure as code (IaC) tools such as Terraform or CloudFormation.</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Salary and Benefits</h3>
+                <ul>
+                    <li>Salary range: <b>$135,000 - $160,000</b> per year + Bonus</li>
+                    <li>Comprehensive health insurance plans.</li>
+                    <li>Generous superannuation</li>
+                    <li>Opportunities for professional development and certifications.</li>
+                    <li>Flexible work arrangements, including remote work options.</li>
+                    <li>Good work/life balance.</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <h3>Reports to Head of Security</h3>
+            </div>
+
+            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <p>Ref #: CSA121</p>
+        </div>
+    </section>
+
+  <?php include 'footer.inc'; ?>
 </body>
+
 </html>
