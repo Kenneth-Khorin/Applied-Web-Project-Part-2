@@ -17,13 +17,14 @@ if (!in_array($sort_by, $allowed_sorts)) {
     $sort_by = 'EOInumber';
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Meet the Three Musketeers team: Technology Division of CyberSecure Solutions">
-    <meta name="keywords" content="about, Cybersecurity">
+    <meta name="keywords" content="manage, Cybersecurity">
     <meta name="author" content="Nuyang Rai">
     <title>EOI Management System</title>
     <link rel="stylesheet" href="styles/styles.css">
@@ -73,7 +74,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                     if (mysqli_num_rows($result) > 0) {
                         echo "<table border='1'>";
                         echo "<tr><th>ID</th><th>Job Ref</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>";
-            
+                        //gets the row from the sql query
                         while ($row = mysqli_fetch_assoc($result)) {
                         echo "<tr>";
                         echo "<td>" . $row['EOInumber'] . "</td>";
@@ -105,6 +106,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
             
         <?php
             if (isset($_POST['search_job_submit'])) {
+                //protects from injection attacks
                 $job_ref = mysqli_real_escape_string($conn, $_POST['job_ref_search']);
                 
                 $sql = "SELECT * FROM eoi WHERE JobReferenceNumber = '$job_ref' ORDER BY $sort_by";
@@ -112,12 +114,6 @@ if (!in_array($sort_by, $allowed_sorts)) {
                 
                 if (mysqli_num_rows($result) > 0) {
                     echo "<h3>Results for Job Reference: $job_ref</h3>";
-                    echo "<p>Sort by: 
-                        <a href='?action=search_job&sort=EOInumber'>ID</a> | 
-                        <a href='?action=search_job&sort=FirstName'>First Name</a> | 
-                        <a href='?action=search_job&sort=LastName'>Last Name</a> | 
-                        <a href='?action=search_job&sort=Status'>Status</a>
-                    </p>";
                     echo "<table border='1'>";
                     echo "<tr><th>ID</th><th>Job Ref</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>";
                     
@@ -155,11 +151,13 @@ if (!in_array($sort_by, $allowed_sorts)) {
             
             <?php
             if (isset($_POST['search_name_submit'])) {
+                //adds a backslash before any special characters to avoid SQL inj. attacks
                 $first_name = mysqli_real_escape_string($conn, $_POST['first_name_search']);
                 $last_name = mysqli_real_escape_string($conn, $_POST['last_name_search']);
                 
                 $conditions = [];
                 if (!empty($first_name)) {
+                    // partial match before or after the name
                     $conditions[] = "FirstName LIKE '%$first_name%'";
                 }
                 if (!empty($last_name)) {
@@ -167,6 +165,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                 }
                 
                 if (count($conditions) > 0) {
+                    // combines the conditions together
                     $where_clause = implode(' AND ', $conditions);
                     $sql = "SELECT * FROM eoi WHERE $where_clause ORDER BY $sort_by";
                     $result = mysqli_query($conn, $sql);
@@ -209,7 +208,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                         <label for="job_ref_delete">Job Reference Number:</label>
                         <input type="text" id="job_ref_delete" name="job_ref_delete" 
                             pattern="[A-Za-z0-9]{5}" maxlength="5" required
-                            placeholder="e.g., CA202">
+                                placeholder="e.g., CA202">
                         <small>Enter the job reference to delete all its applications</small>
                     </div>
                     <button type="submit" name="delete_submit" class="btn-danger">Delete All EOIs</button>
@@ -236,7 +235,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                     if (mysqli_query($conn, $sql)) {
                         echo "<div class='message success'>";
                         echo "<h3>Deletion Successful</h3>";
-                        echo "<p><strong>Deleted $total EOI application(s) for job reference: " . htmlspecialchars($job_ref) . "</strong></p>";
+                        echo "<p><strong>Deleted $total EOI application(s) for job reference: " . htmlspecialchars($job_ref) . "</strong></p>"; //converts special characters to html
                         echo "<details>";
                         echo "<summary>View deleted records</summary>";
                         echo "<ul>";
@@ -285,7 +284,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                         <strong>New:</strong> Recently submitted<br>
                         <strong>Current:</strong> Under review<br>
                         <strong>Final:</strong> Decision made
-                    </smallstyle=display:>
+                    </small>
                 </div>
                 
                 <button type="submit" name="status_submit" class="btn-primary">Update Status</button>
@@ -319,6 +318,7 @@ if (!in_array($sort_by, $allowed_sorts)) {
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($old_record['Email']) . "</p>";
                         echo "<p class='status-change'>";
                         echo "<span class='status-badge status-" . strtolower($old_status) . "'>" . htmlspecialchars($old_status) . "</span>";
+                        echo "To";
                         echo "<span class='status-badge status-" . strtolower($new_status) . "'>" . htmlspecialchars($new_status) . "</span>";
                         echo "</p>";
                         echo "</div>";

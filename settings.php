@@ -5,8 +5,8 @@ $user = "root";
 $pass = ""; // default for XAMPP
 $dbname = "project_2";
 
-$conn = mysqli_connect("localhost", "root", "", "db_name");
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-} 
-?>
+$conn = new mysqli($host, $user, $pass, $dbname);
+
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
