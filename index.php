@@ -1,33 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Jobs description">
+    <meta name="keywords" content="Jobs, Cybersecurity,">
+    <meta name="author" content="#">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | Vangarde</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
+
 <body>
     <?php include 'header.inc'; ?>
 
-    <main>
+    <div class="container"> 
+
         <!-- Hero Banner Section -->
         <!-- Full-width banner with call-to-action -->
         <section class="banner" aria-labelledby="hero-heading">
             <article class="bannercontent">
                 <h1 id="hero-heading">Build your future now with us</h1>
-                <form action="jobs.html">
+                <form action="jobs.php">
                     <button type="submit" class="explore">Explore Careers</button>
                 </form>
             </article>
         </section>
-
+    
         <!-- Company Logo Section -->
         <!-- Displays Vangarde branding and logo -->
-        <section class="vangardelogo" aria-label="Company logo">
-            <img src="Images/shieldlogo.png" alt="Vangarde shield logo" class="logoimg">
-            <p>Vangarde</p>
+        <section aria-label="Company logo">
+            <img src="images/shieldlogo.png" alt="Vangarde Logo" class="logo">
+            <h1 class="title">Vangarde</h1>
         </section>
-
+    
         <!-- Quick Navigation Links -->
         <!-- Jump links to different sections of the page -->
         <section class="tablecontent" aria-label="Quick navigation">
@@ -38,7 +44,7 @@
                 <a href="#globaloffice">Global Office</a>
             </nav>
         </section>
-
+    
         <!-- Why Work With Us Section -->
         <!-- Explains company mission and values -->
         <section class="why" aria-labelledby="why-heading">
@@ -47,20 +53,20 @@
                 <p>Our team is dedicated to solving real-world technology problems. Our teams are building the future of enterprise solutions, cybersecurity, cloud services, and software development with purpose and impact.</p>
             </article>
         </section>
-
+    
         <!-- Video Section -->
         <!-- Embedded promotional video -->
-        <section class="youtube23" aria-label="Company promotional video">
-            <iframe 
-                class="youtube" 
-                src="https://www.youtube.com/embed/91tdkSp6ahA?si=7hIDFtaFurbIjBH-" 
-                title="Vangarde company promotional video" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin" 
+        <section class="video" aria-label="Company promotional video">
+            <iframe
+                class="youtube"
+                src="https://www.youtube.com/embed/91tdkSp6ahA?si=7hIDFtaFurbIjBH-"
+                title="Vangarde company promotional video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen>
             </iframe>
         </section>
-
+    
         <!-- Our Teams Section -->
         <!-- Overview of different departments and roles -->
         <section class="team" aria-labelledby="team-heading">
@@ -69,10 +75,10 @@
                 <p>We're hiring across Development, Software Engineering, Data Analysis, Cybersecurity, IT Support, and more. Whatever your skills, there's a team for you at Vangarde.</p>
             </article>
         </section>
-
+    
         <!-- Employee Benefits Section -->
         <!-- Lists benefits and perks with supporting image -->
-        <section class="benefits" aria-labelledby="benefits-heading">
+        <section class="benefits-home" aria-labelledby="benefits-heading">
             <article id="employee">
                 <h2 id="benefits-heading">Benefits of becoming one of us</h2>
                 <ul>
@@ -84,11 +90,11 @@
                 </ul>
             </article>
             <!-- Benefits illustration -->
-            <img src="Images/young-colleagues-group-having-fun-600nw-1989897731.webp" 
-                 alt="Happy colleagues collaborating in a modern office environment" 
-                 loading="lazy">
+            <img src="Images/young-colleagues-group-having-fun-600nw-1989897731.webp"
+                alt="Happy colleagues collaborating in a modern office environment"
+                loading="lazy">
         </section>
-
+    
         <!-- Global Office Section -->
         <!-- Information about worldwide operations -->
         <section class="globaloffice" aria-labelledby="global-heading">
@@ -96,82 +102,31 @@
                 <h2 id="global-heading">Global Office</h2>
                 <p>With operations across North America, Europe, and Asia, Vangarde offers diverse opportunities for professionals around the world to work on global tech solutions.</p>
                 <form action="https://www.swinburne.edu.au/life-at-swinburne/study-abroad-exchange/contact-us/">
-                    <button type="submit" class="btn">More Details</button>
+                    <button type="submit" class="btn-warning">More Details</button>
                 </form>
             </article>
         </section>
-
+    
         <!-- Call to Action Section -->
         <!-- Final CTA encouraging users to apply or explore -->
         <section class="readytojoin" aria-labelledby="cta-heading">
             <h2 id="cta-heading">Ready to join us?</h2>
             <nav class="button" aria-label="Application actions">
-                <form action="apply.html">
-                    <button type="submit" class="btn">Get Started</button>
+                <form action="apply.php">
+                    <button type="submit" class="btn-warning">Get Started</button>
                 </form>
-                <form action="jobs.html">
-                    <button type="submit" class="btn">Explore Careers</button>
+                <form action="jobs.php">
+                    <button type="submit" class="btn-warning">Explore Careers</button>
                 </form>
             </nav>
         </section>
-    </main>
+    </div>
 
     <!-- ====================================
          FOOTER
          Contact information, company links, and social media
          ==================================== -->
-    <footer>
-        <section class="footer" aria-label="Footer navigation and contact information">
-            <!-- Footer Logo -->
-            <article class="footerlogo">
-                <img src="Images/shieldlogo.png" alt="Vangarde shield logo" class="footerlogoimg">
-            </article>
-
-            <!-- Contact Information -->
-            <article class="objfooter">
-                <h3>Contact</h3>
-                <div class="link">
-                    <a href="#" aria-label="View Jira project board">Jira Project</a>
-                </div>
-                <div class="email">
-                    Email: <a href="mailto:Vangarde@gmail.com.au">Vangarde@gmail.com.au</a>
-                </div>
-                <div class="megaphonetelephone">
-                    <a href="tel:045532214">Tel: 045-532-214</a>
-                </div>
-            </article>
-
-            <!-- Company Links -->
-            <article class="objfooter">
-                <h3>Company</h3>
-                <div class="link">
-                    <a href="about.html">About us</a>
-                </div>
-                <div class="email">
-                    <a href="#">Events</a>
-                </div>
-                <div class="megaphonetelephone">
-                    <a href="#">Terms and conditions</a>
-                </div>
-            </article>
-
-            <!-- Social Media Links -->
-            <article class="objfooter">
-                <h3>Follow Us</h3>
-                <div class="link">
-                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Visit our GitHub profile">GitHub</a>
-                </div>
-                <div class="email">
-                    <a href="#" aria-label="Follow us on Instagram">Instagram</a>
-                </div>
-                <div class="megaphonetelephone">
-                    <a href="#" aria-label="Follow us on Twitter">Twitter</a>
-                </div>
-            </article>
-        </section>
-
-        <!-- Copyright Notice -->
-        <p class="copyright">&copy; 2025 Vangarde. All rights reserved.</p>
-    </footer>
+    <?php include 'footer.inc'; ?>
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 $host = "localhost";
 $user = "root";
 $pass = ""; // default for XAMPP
-$dbname = "project_2";
+$dbname = "project2_db";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
