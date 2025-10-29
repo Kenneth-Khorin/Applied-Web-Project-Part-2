@@ -202,20 +202,14 @@ if (!in_array($sort_by, $allowed_sorts)) {
                     <p><strong>Warning:</strong> This action will permanently delete ALL applications for the specified job reference!</p>
                 </div>
                 
-                <form method="POST" action="manage.php?action=delete">
+                <form method="POST" action="manage.php?action=delete" 
+                    onsubmit="return confirm('Are you absolutely sure you want to DELETE ALL EOIs for this job reference?\n\nThis action CANNOT be undone!');">
                     <div class="form-group">
                         <label for="job_ref_delete">Job Reference Number:</label>
                         <input type="text" id="job_ref_delete" name="job_ref_delete" 
                             pattern="[A-Za-z0-9]{5}" maxlength="5" required
                                 placeholder="e.g., CA202">
                         <small>Enter the job reference to delete all its applications</small>
-                    </div>
-
-                    <div class="form-group confirm-delete">
-                        <label>
-                            <input type="checkbox" name="confirm_delete" required>
-                            I understand that this action <strong>cannot be undone</strong>.
-                        </label>
                     </div>
                     <button type="submit" name="delete_submit" class="btn-danger">Delete All EOIs</button>
                 </form>
