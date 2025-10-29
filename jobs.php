@@ -7,13 +7,11 @@
     <meta name="author" content="Kenneth Khorin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jobs page</title>
-    <link rel="stylesheet" href="styles/custom.css">
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 
 <body>
-<header>
-<?php include 'nav.inc'; ?>
-</header>
+    <?php include 'header.inc'; ?>
     <img src="images/shieldlogo.png" alt="Vangarde Logo" class="logo">
     <h1>Career at Vangarde</h1>
     <p class="p1">We’re a young and ambitious cybersecurity firm with big plans to expand, and we’re looking for passionate people to grow with us. you’ll have the opportunity to shape our culture, contribute to innovative solutions, and make a real impact as we build and scale. Check out our current job openings below:</p>
@@ -22,10 +20,10 @@
     <aside>
     <h2>Why Work With us</h2>
     <ol>
-        <li><b>Be part of a growing company:</b> Join us at an exciting stage where your contributions directly shape our future.</li>
-        <li><b>Innovative projects:</b> Work on cutting-edge cybersecurity solutions that challenge the status quo.</li>
-        <li><b>Collaborative culture:</b> We value teamwork, openness, and shared success.</li>
-        <li><b>Professional growth:</b> Opportunities for learning, development, and career advancement.</li>
+        <li>Be part of a growing company: Join us at an exciting stage where your contributions directly shape our future.</li>
+        <li>Innovative projects: Work on cutting-edge cybersecurity solutions that challenge the status quo.</li>
+        <li>Collaborative culture: We value teamwork, openness, and shared success.</li>
+        <li>Professional growth: Opportunities for learning, development, and career advancement.</li>
     </ol>
     </aside>
     <!--Benefits & Perks section-->
@@ -135,7 +133,7 @@
             <div class="role-card">
                 <h3>Salary and Benefits</h3>
                 <ul>
-                    <li>Salary range: <b>$80,000 - $90,000</b> per year + Bonus</li>
+                    <li>Salary range: $80,000 - $90,000 per year + Bonus</li>
                     <li>Comprehensive health insurance plans.</li>
                     <li>Generous superannuation</li>
                     <li>Opportunities for professional development and certifications.</li>
@@ -148,7 +146,7 @@
                 <h3>Reports to Director of Technology</h3>
             </div>
 
-            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <a href="apply.html"><button class="apply-button">Apply Now</button></a>
             <p>Ref #: CA202</p>
 
         </div>
@@ -195,7 +193,7 @@
             <div class="role-card">
                 <h3>Salary and Benefits</h3>
                 <ul>
-                    <li>Salary range: <b>$110,000 - $140,000</b> per year + Bonus</li>
+                    <li>Salary range: $110,000 - $140,000 per year + Bonus</li>
                     <li>Comprehensive health insurance plans.</li>
                     <li>Generous superannuation</li>
                     <li>Options for remote, hybrid, or flexible hours to support work-life balance.</li>
@@ -208,7 +206,7 @@
                 <h3>Reports to Head of Security</h3>
             </div>
 
-            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <a href="apply.html"><button class="apply-button">Apply Now</button></a>
             <p>Ref #: DSE222</p>
         
         </div>
@@ -255,7 +253,7 @@
             <div class="role-card">
                 <h3>Salary and Benefits</h3>
                 <ul>
-                    <li>Salary range: <b>$135,000 - $160,000</b> per year + Bonus</li>
+                    <li>Salary range: $135,000 - $160,000 per year + Bonus</li>
                     <li>Comprehensive health insurance plans.</li>
                     <li>Generous superannuation</li>
                     <li>Opportunities for professional development and certifications.</li>
@@ -268,7 +266,7 @@
                 <h3>Reports to Head of Security</h3>
             </div>
 
-            <button class="apply-button" onclick="window.location.href='apply.html'">Apply Now</button>
+            <a href="apply.html"><button class="apply-button">Apply Now</button></a>
             <p>Ref #: CSA121</p>
         </div>
     </section>

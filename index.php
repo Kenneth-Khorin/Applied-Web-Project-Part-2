@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <header>
-        <?php include 'includes/nav.inc'; ?>
-    </header>
+    <?php include 'header.inc'; ?>
 
     <main>
         <!-- Hero Banner Section -->
