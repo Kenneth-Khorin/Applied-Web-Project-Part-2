@@ -19,6 +19,15 @@ body {
     color: white;
 }
 
+main {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* === CONTAINER & WRAPPER === */
 .container {
     max-width: 1200px;
@@ -29,6 +38,13 @@ body {
 .content-wrapper {
     padding: 2rem;
     max-width: 100%;
+}
+
+/* About page specific wrapper styling */
+.content-wrapper.about-wrapper {
+    background: #1c1c1c;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* === HEADER & NAVIGATION === */
@@ -108,7 +124,133 @@ dd {
     margin-left: 2rem;
 }
 
+/* === ABOUT PAGE - TEAM HEADER === */
+#team-header {
+    text-align: center;
+    margin-bottom: 48px;
+    color: #ffcc00;
+}
+
+/* === ABOUT PAGE - TEAM INFO === */
+#team-info {
+    border: solid 2px #ffcc00;
+    padding: 32px;
+    border-radius: 10px;
+    margin-bottom: 48px;
+}
+
+#team-info ul {
+    list-style-position: inside;
+    margin-left: 16px;
+}
+
+#team-info ul ul {
+    margin-left: 32px;
+    margin-top: 8px;
+}
+
+#team-info > ul > li {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+/* === ABOUT PAGE - STUDENT IDS === */
+.student-ids {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    color: #ffff00;
+    font-size: 14px;
+}
+
+/* === MEMBER CARDS === */
+.members-section {
+    margin: 48px 0;
+}
+
+.member-card {
+    background-color: #1c1c1c;
+    border: solid 2px #ffcc00;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.member-card > h3 {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+/* === DEFINITION LISTS (for About page member details) === */
+dl {
+    margin: 16px 0;
+    color: black;
+}
+
+dt {
+    font-weight: bold;
+    color: white;
+    margin-top: 16px;
+}
+
+dd {
+    margin-left: 32px;
+    margin-top: 8px;
+    padding: 8px;
+    background: #f7fafc;
+    border-left: 3px solid #ffcc00;
+}
+
+.quote {
+    font-style: italic;
+    position: relative;
+    padding-left: 32px;
+    color: #4a5568;
+}
+
+.quote::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -10px;
+    font-size: 48px;
+    color: #cbd5e0;
+}
+
+/* === FIGURES & IMAGES === */
+figure {
+    margin: 48px 0;
+    text-align: center;
+}
+
+figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(249, 242, 242, 0.99);
+}
+
+figcaption {
+    margin-top: 16px;
+    font-style: italic;
+    color: #cbd5e0;
+}
+
 /* === TABLES === */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* Default table styling (dark theme) */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -127,18 +269,61 @@ th {
     font-weight: 600;
 }
 
-.table-container {
-    overflow-x: auto;
-    margin-bottom: 1.5rem;
+/* About page table styling (white theme with gold header) */
+.about-table,
+.content-wrapper table {
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* === MEMBER CARDS === */
-.member-card {
-    background-color: #1c1c1c;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.about-table caption,
+.content-wrapper caption {
+    caption-side: top;
+    padding: 16px;
+    font-size: 19.2px;
+    font-weight: bold;
+    color: white;
+}
+
+.about-table th,
+.content-wrapper th {
+    background: linear-gradient(135deg, #ffcc00, #B8860B);
+    color: white;
+    padding: 16px;
+    text-align: left;
+    border: none;
+}
+
+.about-table td,
+.content-wrapper td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: black;
+}
+
+.about-table tbody tr:nth-child(even),
+.content-wrapper tbody tr:nth-child(even) {
+    background: #f7fafc;
+}
+
+.about-table tbody tr:nth-child(odd),
+.content-wrapper tbody tr:nth-child(odd) {
+    background: white;
+}
+
+.about-table tbody tr:hover,
+.content-wrapper tbody tr:hover {
+    background: #edf2f7;
+    transition: background 0.3s ease;
+}
+
+.about-table tbody tr:last-child td,
+.content-wrapper tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* === BANNER SECTION === */
@@ -441,7 +626,8 @@ footer {
     color: #ccc;
 }
 
-.objfooter div {
+.objfooter div,
+.objfooter p {
     margin-bottom: 0.5rem;
 }
 
@@ -459,7 +645,6 @@ footer {
 
 /* Tablet (768px and below) */
 @media (max-width: 768px) {
-    /* Adjust container padding for mobile */
     .content-wrapper {
         padding: 1.5rem;
     }
@@ -468,28 +653,24 @@ footer {
         padding: 0 1rem;
     }
     
-    /* Stack navigation vertically on mobile */
     nav ul {
         gap: 0.5rem;
         flex-direction: column;
         align-items: center;
     }
     
-    /* Reduce indent for definition lists */
     dd {
         margin-left: 1rem;
     }
     
-    /* Adjust table font size */
     table {
         font-size: 0.9rem;
     }
     
     th, td {
-        padding: 0.5rem; 
+        padding: 0.5rem;
     }
     
-    /* Adjust heading sizes */
     h1 {
         font-size: 2rem;
     }
@@ -502,7 +683,6 @@ footer {
         font-size: 1.2rem;
     }
     
-    /* Banner adjustments */
     .banner {
         min-height: 50vh;
         padding: 1rem;
@@ -512,13 +692,11 @@ footer {
         padding: 1rem;
     }
     
-    /* Content adjustments */
     .content {
         flex-direction: column;
         align-items: center;
     }
     
-    /* Benefits section */
     .benefits {
         flex-direction: column;
         padding: 2rem 1rem;
@@ -529,7 +707,6 @@ footer {
         max-width: 420px;
     }
     
-    /* Global office */
     .globaloffice {
         min-height: 50vh;
         padding: 1rem;
@@ -539,7 +716,6 @@ footer {
         max-width: 100%;
     }
     
-    /* Footer */
     .footer {
         grid-template-columns: 1fr;
         text-align: center;
@@ -548,7 +724,6 @@ footer {
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
-    /* Further adjustments for very small screens */
     .container {
         padding: 0 0.625rem;
     }
@@ -561,17 +736,14 @@ footer {
         padding: 1rem;
     }
     
-    /* Make table scroll horizontally */
     .table-container {
         overflow-x: auto;
     }
     
-    /* Header adjustments */
     header {
         padding: 0.5rem;
     }
     
-    /* Navigation */
     nav ul {
         gap: 0.5rem;
     }
@@ -581,17 +753,14 @@ footer {
         font-size: 0.9rem;
     }
     
-    /* Banner */
     .banner {
         min-height: 40vh;
     }
     
-    /* Logo */
     .vangardelogo p {
         font-size: 2rem;
     }
     
-    /* Content */
     .content {
         padding: 1rem;
     }
@@ -600,7 +769,6 @@ footer {
         font-size: 0.9rem;
     }
     
-    /* Sections */
     .why,
     #team,
     #employee,
@@ -608,12 +776,10 @@ footer {
         padding: 1rem;
     }
     
-    /* Video */
     .youtube {
         max-width: 100%;
     }
     
-    /* Buttons */
     .button {
         flex-direction: column;
         align-items: center;
